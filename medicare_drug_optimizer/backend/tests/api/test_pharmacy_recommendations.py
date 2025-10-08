@@ -3,7 +3,8 @@
 import pytest
 from fastapi.testclient import TestClient
 from unittest.mock import MagicMock
-from backend.app.main import app, medicare_client, PharmacyOptimizer
+from backend.app.main import app, medicare_client
+from backend.app.services.pharmacy_optimizer import PharmacyOptimizer
 from backend.app.models.medicare_api_models import Pharmacy
 from backend.app.models.user_pharmacy_preferences import UserPharmacyPreferences
 from backend.app.models.pharmacy_recommendation import PharmacyRecommendation
@@ -17,7 +18,7 @@ def mock_dependencies():
 
 def test_get_pharmacy_recommendations_success():
     mock_pharmacies = [
-        Pharmacy(id="P1", name="Pharmacy 1", address="123 Main St", latitude=34.0, longitude=-81.0, networkStatus="In-Network"),
+        Pharmacy(id="P1", name="Pharmacy 1", address="123 Main St", latitude=34.0, longitude=-81.0, network_status="In-Network"),
     ]
     mock_recommendations = [
         PharmacyRecommendation(pharmacy=mock_pharmacies[0], reason="Closest pharmacy"),
@@ -61,7 +62,7 @@ def test_get_pharmacy_recommendations_no_pharmacies_found():
 
 def test_get_pharmacy_recommendations_no_recommendations_found():
     mock_pharmacies = [
-        Pharmacy(id="P1", name="Pharmacy 1", address="123 Main St", latitude=34.0, longitude=-81.0, networkStatus="In-Network"),
+        Pharmacy(id="P1", name="Pharmacy 1", address="123 Main St", latitude=34.0, longitude=-81.0, network_status="In-Network"),
     ]
     medicare_client.get_pharmacies.return_value = mock_pharmacies
     PharmacyOptimizer.get_recommended_pharmacies.return_value = []

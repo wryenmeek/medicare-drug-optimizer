@@ -3,7 +3,8 @@
 import pytest
 from fastapi.testclient import TestClient
 from unittest.mock import MagicMock
-from backend.app.main import app, medicare_client, OptimizationService
+from backend.app.main import app, medicare_client
+from backend.app.services.optimization_service import OptimizationService
 from backend.app.models.medicare_api_models import Plan, Pharmacy
 from backend.app.models.partd_plan import PartDPlan
 from backend.app.models.drug import Drug
@@ -22,7 +23,7 @@ def test_get_optimized_plans_success():
         Plan(id="1", name="Plan A", issuer="Issuer X"),
     ]
     mock_pharmacies = [
-        Pharmacy(id="P1", name="Pharmacy 1", address="123 Main St", latitude=34.0, longitude=-81.0, networkStatus="In-Network"),
+        Pharmacy(id="P1", name="Pharmacy 1", address="123 Main St", latitude=34.0, longitude=-81.0, network_status="In-Network"),
     ]
     mock_drugs = [
         Drug(drug_name="Drug X"),
@@ -98,7 +99,7 @@ def test_get_optimized_plans_no_optimized_plans_found():
         Plan(id="1", name="Plan A", issuer="Issuer X"),
     ]
     mock_pharmacies = [
-        Pharmacy(id="P1", name="Pharmacy 1", address="123 Main St", latitude=34.0, longitude=-81.0, networkStatus="In-Network"),
+        Pharmacy(id="P1", name="Pharmacy 1", address="123 Main St", latitude=34.0, longitude=-81.0, network_status="In-Network"),
     ]
     medicare_client.get_plans.return_value = mock_plans
     medicare_client.get_pharmacies.return_value = mock_pharmacies

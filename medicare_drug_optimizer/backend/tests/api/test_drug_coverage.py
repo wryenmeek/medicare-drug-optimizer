@@ -3,7 +3,8 @@
 import pytest
 from fastapi.testclient import TestClient
 from unittest.mock import MagicMock
-from backend.app.main import app, medicare_client, DrugCoverageProcessor
+from backend.app.main import app, medicare_client
+from backend.app.services.drug_coverage_processor import DrugCoverageProcessor
 from backend.app.models.medicare_api_models import DrugInfo, DrugAlternative, DrugRestriction
 from backend.app.models.coverage_details import CoverageDetails
 

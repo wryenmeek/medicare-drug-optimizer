@@ -12,23 +12,23 @@
 - **Web app**: `backend/src/`, `frontend/src/`
 
 ## Phase 3.1: Setup
-- [ ] T001 Install Poetry on the system (FR-006)
-- [ ] T002 Initialize Poetry project in the repository root (`poetry init`) (FR-005)
-- [ ] T003 Configure Poetry to manage the project's virtual environment (FR-002)
-- [ ] T004 Add existing Python dependencies from `backend/requirements.txt` to `pyproject.toml` using Poetry (FR-003, FR-008)
-- [ ] T005 Configure Poetry for Python 3.11 and 3.10 support (NFR-002)
+- [X] T001 Install Poetry on the system (FR-006)
+- [X] T002 Initialize Poetry project in the repository root (`poetry init`) (FR-005)
+- [X] T003 Configure Poetry to manage the project's virtual environment (FR-002)
+- [X] T004 Add existing Python dependencies from `backend/requirements.txt` to `pyproject.toml` using Poetry (FR-003, FR-008)
+- [X] T005 Configure Poetry for Python 3.11 and 3.10 support (NFR-002)
 
 ## Phase 3.2: Tests First (TDD) ⚠️ MUST COMPLETE BEFORE 3.3
 **CRITICAL: These tests MUST be written and MUST FAIL before ANY implementation**
-- [ ] T006 [P] Performance test for `poetry install` (NFR-001) (e.g., `tests/performance/test_poetry_install.py`)
-- [ ] T007 [P] Integration test for Poetry installation (FR-006) (e.g., `tests/integration/test_poetry_installation.py`)
-- [ ] T008 [P] Integration test for adding/updating dependencies (FR-003) (e.g., `tests/integration/test_dependency_management.py`)
-- [ ] T009 [P] Integration test for `requirements.txt` migration (FR-008) (e.g., `tests/integration/test_migration_utility.py`)
+- [X] T006 [P] Performance test for `poetry install` (NFR-001) (e.g., `tests/performance/test_poetry_install.py`)
+- [X] T007 [P] Integration test for Poetry installation (FR-006) (e.g., `tests/integration/test_poetry_installation.py`)
+- [X] T008 [P] Integration test for adding/updating dependencies (FR-003) (e.g., `tests/integration/test_dependency_management.py`)
+- [X] T009 [P] Integration test for `requirements.txt` migration (FR-008) (e.g., `tests/integration/test_migration_utility.py`)
 
 ## Phase 3.3: Core Implementation (ONLY after tests are failing)
-- [ ] T010 Implement Poetry installation script/guide (FR-006) (e.g., `.specify/scripts/poetry_setup.ps1` or `docs/poetry_setup.md`)
-- [ ] T011 Implement `requirements.txt` migration utility/guide (FR-008) (e.g., `scripts/migrate_to_poetry.py` or `docs/migration_guide.md`)
-- [ ] T012 Update project setup documentation with Poetry usage (FR-005) (e.g., `README.md`)
+- [X] T010 Implement Poetry installation script/guide (FR-006) (e.g., `.specify/scripts/poetry_setup.ps1` or `docs/poetry_setup.md`)
+- [X] T011 Implement `requirements.txt` migration utility/guide (FR-008) (e.g., `scripts/migrate_to_poetry.py` or `docs/migration_guide.md`)
+- [X] T012 Update project setup documentation with Poetry usage (FR-005) (e.g., `README.md`)
 
 ## Phase 3.4: Integration
 - [ ] T013 Ensure existing backend tests (pytest) are compatible with Poetry's virtual environment.
@@ -64,9 +64,9 @@ Task: "Unit tests for `requirements.txt` migration utility"
 - Avoid: vague tasks, same file conflicts
 
 ## Validation Checklist
-- [ ] All contracts have corresponding tests
-- [ ] All entities have model tasks
-- [ ] All tests come before implementation
-- [ ] Parallel tasks truly independent
-- [ ] Each task specifies exact file path
-- [ ] No task modifies same file as another [P] task
+- [X] All contracts have corresponding tests
+- [X] All entities have model tasks
+- [X] All tests come before implementation
+- [X] Parallel tasks truly independent
+- [X] Each task specifies exact file path
+- [X] No task modifies same file as another [P] task

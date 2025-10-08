@@ -22,8 +22,8 @@ def sample_data():
         Drug(drug_name="Drug Y"),
     ]
     pharmacies = [
-        Pharmacy(id="PH1", name="Pharmacy 1", address="Addr1", latitude=1.0, longitude=1.0, networkStatus="In-Network"),
-        Pharmacy(id="PH2", name="Pharmacy 2", address="Addr2", latitude=2.0, longitude=2.0, networkStatus="Preferred"),
+        Pharmacy(id="PH1", name="Pharmacy 1", address="Addr1", latitude=1.0, longitude=1.0, network_status="In-Network"),
+        Pharmacy(id="PH2", name="Pharmacy 2", address="Addr2", latitude=2.0, longitude=2.0, network_status="Preferred"),
     ]
     return plans, drugs, pharmacies
 

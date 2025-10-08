@@ -1,0 +1,32 @@
+[tool.black]
+line-length = 88
+target-version = ['py311']
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+select = [
+    "E",  # Error
+    "W",  # Warning
+    "F",  # Pyflakes
+    "I",  # Isort
+    "N",  # Naming
+    "D",  # Docstrings
+    "UP", # Pyupgrade
+    "B",  # Bugbear
+    "A",  # Builtin shadowing
+    "C4", # Comprehension
+    "SIM",# Simplify
+    "TID",# Tidy
+    "ARG",# Unused arguments
+    "PERF", # Performance
+]
+ignore = [
+    "D100", # Missing docstring in public module
+    "D104", # Missing docstring in public package
+    "D105", # Missing docstring in public method
+    "D107", # Missing docstring in __init__
+]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]

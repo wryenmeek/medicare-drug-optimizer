@@ -36,8 +36,56 @@ This project uses [Poetry](https://python-poetry.org/) for dependency management
 
 ### Running the Application
 
-(Instructions for running the backend and frontend will go here later)
+#### Backend
+1.  Navigate to the `backend` directory:
+    ```bash
+    cd backend
+    ```
+2.  Activate the Poetry shell:
+    ```bash
+    poetry shell
+    ```
+3.  Run the FastAPI application:
+    ```bash
+    uvicorn app.main:app --reload
+    ```
+
+#### Frontend
+1.  Navigate to the `frontend` directory:
+    ```bash
+    cd frontend
+    ```
+2.  Install Node.js dependencies:
+    ```bash
+    npm install
+    ```
+3.  Start the Vite development server:
+    ```bash
+    npm run dev
+    ```
 
 ### Running Tests
 
-(Instructions for running tests will go here later)
+#### Backend
+1.  Navigate to the `backend` directory:
+    ```bash
+    cd backend
+    ```
+2.  Activate the Poetry shell:
+    ```bash
+    poetry shell
+    ```
+3.  Run pytest:
+    ```bash
+    pytest
+    ```
+
+#### Frontend
+1.  Navigate to the `frontend` directory:
+    ```bash
+    cd frontend
+    ```
+2.  Run Vitest:
+    ```bash
+    npm run test
+    ```

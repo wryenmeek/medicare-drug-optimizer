@@ -1,6 +1,6 @@
 # backend/app/api/plans.py
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from typing import List
 from backend.app.services.medicare_api_client import MedicareAPIClient
 from backend.app.services.optimization_service import OptimizationService # New import
@@ -28,7 +28,7 @@ async def get_plans(zip_code: str, county: str, medicare_client: MedicareAPIClie
 async def get_optimized_plans(
     zip_code: str,
     county: str,
-    drug_names: List[str], # Assuming drug names are passed as a list
+    drug_names: List[str] = Query(None), # Assuming drug names are passed as a list
     medicare_client: MedicareAPIClient = Depends(get_medicare_client),
     optimizer: OptimizationService = Depends(get_optimization_service)
 ):

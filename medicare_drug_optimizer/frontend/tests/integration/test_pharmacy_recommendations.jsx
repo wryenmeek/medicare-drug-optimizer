@@ -1,7 +1,7 @@
 // frontend/tests/integration/test_pharmacy_recommendations.jsx
 
 import { render, screen } from '@testing-library/react';
-import { MemoryRouter }n from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom';
 import App from '../../src/App';
 
 describe('Pharmacy Recommendations Integration', () => {
@@ -14,6 +14,6 @@ describe('Pharmacy Recommendations Integration', () => {
 
     // Placeholder for actual test logic
     // This test will be expanded once PharmacyRecommendations is fully implemented
-    expect(screen.getByText(/Pharmacy Recommendations/i)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2, name: /Pharmacy Recommendations/i })).toBeInTheDocument();
   });
 });

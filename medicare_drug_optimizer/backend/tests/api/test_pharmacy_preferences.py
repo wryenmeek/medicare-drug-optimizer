@@ -36,8 +36,7 @@ def test_get_pharmacy_preferences_existing():
     response = client.get(f"/api/pharmacies/preferences?user_id={user_id}")
 
     assert response.status_code == 200
-    assert response.json() == preferences.model_dump_json()
-
+    assert response.json() == preferences.model_dump()
 def test_update_pharmacy_preferences():
     user_id = "test_user"
     preferences_data = {

@@ -14,6 +14,6 @@ describe('Pharmacy Preferences Integration', () => {
 
     // Placeholder for actual test logic
     // This test will be expanded once PharmacyPreferences is fully implemented
-    expect(screen.getByText(/Pharmacy Preferences/i)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2, name: /Pharmacy Preferences/i })).toBeInTheDocument();
   });
 });

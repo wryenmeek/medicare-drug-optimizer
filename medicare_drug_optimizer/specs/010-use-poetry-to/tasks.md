@@ -31,12 +31,12 @@
 - [X] T012 Update project setup documentation with Poetry usage (FR-005) (e.g., `README.md`)
 
 ## Phase 3.4: Integration
-- [ ] T013 Ensure existing backend tests (pytest) are compatible with Poetry's virtual environment.
+- [X] T013 Ensure existing backend tests (pytest) are compatible with Poetry's virtual environment.
 
 ## Phase 3.5: Polish
-- [ ] T014 [P] Unit tests for Poetry installation script/guide (e.g., `tests/unit/test_poetry_setup.py`)
-- [ ] T015 [P] Unit tests for `requirements.txt` migration utility (e.g., `tests/unit/test_migration_utility.py`)
-- [ ] T016 Update documentation with Poetry best practices and troubleshooting (e.g., `docs/poetry_best_practices.md`)
+- [X] T014 [P] Unit tests for Poetry installation script/guide (e.g., `tests/unit/test_poetry_setup.py`)
+- [X] T015 [P] Unit tests for `requirements.txt` migration utility (e.g., `tests/unit/test_migration_utility.py`)
+- [X] T016 Update documentation with Poetry best practices and troubleshooting (e.g., `docs/poetry_best_practices.md`)
 
 ## Dependencies
 - Setup tasks (T001-T005) must be completed before Test tasks (T006-T009).

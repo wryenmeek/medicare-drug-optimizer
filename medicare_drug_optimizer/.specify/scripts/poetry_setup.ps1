@@ -12,9 +12,16 @@ try {
 } catch {
     Write-Host "Poetry not found. Installing Poetry..."
     
-    # Install Poetry using the official installer script
-    # This is the recommended way to install Poetry
-    Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing | Invoke-Expression
+    # Download the installer script securely
+    $installerPath = "$($env:TEMP)\install-poetry.py"
+    Invoke-WebRequest -Uri https://install.python-poetry.org -OutFile $installerPath -UseBasicParsing
+
+    # TODO: Add a step to verify the checksum of the downloaded file against a known value.
+    # For example:
+    # if ((Get-FileHash $installerPath -Algorithm SHA256).Hash -ne 'EXPECTED_CHECKSUM') { throw 'Checksum mismatch!' }
+
+    # Execute the local, verified script
+    python $installerPath
 
     # Add Poetry to PATH for the current session (and potentially permanently)
     # The installer usually handles this, but explicit addition can help

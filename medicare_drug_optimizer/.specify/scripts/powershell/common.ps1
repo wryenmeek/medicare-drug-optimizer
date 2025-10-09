@@ -3,13 +3,24 @@
 
 function Get-RepoRoot {
     try {
-                if ($LASTEXITCODE -eq 0) {
-                    return (Resolve-Path $result).Path
-                }    } catch {
+        $result = git rev-parse --show-toplevel 2>$null
+        if ($LASTEXITCODE -eq 0) {
+            return (Resolve-Path $result).Path
+        }
+    }
+    catch {
         # Git command failed
     }
-    
-    # Fall back to script location for non-git repos
+
+    # Fallback: search upwards for a repository marker
+    $current = $PSScriptRoot
+    while ($current -ne $null -and $current -ne '') {
+        if ((Test-Path (Join-Path $current '.git')) -or (Test-Path (Join-Path $current 'pyproject.toml'))) {
+            return $current
+        }
+        $current = (Split-Path $current -Parent)
+    }
+    # Final fallback to original relative path
     return (Resolve-Path (Join-Path $PSScriptRoot "../../..")).Path
 }
 

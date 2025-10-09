@@ -1,11 +1,11 @@
 # backend/tests/api/test_pharmacy_preferences.py
 
+
 import pytest
-from fastapi.testclient import TestClient
-from unittest.mock import MagicMock
-from backend.app.main import app
 from backend.app.api.pharmacies import user_pharmacy_preferences_db
+from backend.app.main import app
 from backend.app.models.user_pharmacy_preferences import UserPharmacyPreferences
+from fastapi.testclient import TestClient
 
 client = TestClient(app)
 
@@ -37,6 +37,8 @@ def test_get_pharmacy_preferences_existing():
 
     assert response.status_code == 200
     assert response.json() == preferences.model_dump()
+
+
 def test_update_pharmacy_preferences():
     user_id = "test_user"
     preferences_data = {

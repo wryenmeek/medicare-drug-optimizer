@@ -2434,9 +2434,9 @@
         }
       }
     },
-    "/api/v1/data/plan-compare/drugs/info/2025/{2025}/{param9}/{param10}": {
+    "/api/v1/data/plan-compare/drugs/info/{year}/{contract_id}/{plan_id}": {
       "post": {
-        "summary": "/api/v1/data/plan-compare/drugs/info/2025/{2025}/{param9}/{param10}",
+        "summary": "/api/v1/data/plan-compare/drugs/info/{year}/{contract_id}/{plan_id}",
         "description": "**host**: https://www.medicare.gov",
         "responses": {
           "200": {

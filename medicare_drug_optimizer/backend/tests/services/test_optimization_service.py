@@ -14,8 +14,8 @@ def optimization_service():
 @pytest.fixture
 def sample_data():
     plans = [
-        PartDPlan(plan_id="P1", plan_name="Plan A", carrier_name="C1", monthly_premium=10.0, deductible=100.0, out_of_pocket_max=1000.0),
-        PartDPlan(plan_id="P2", plan_name="Plan B", carrier_name="C2", monthly_premium=15.0, deductible=50.0, out_of_pocket_max=1200.0),
+        PartDPlan(plan_id="P1", plan_name="Plan A", issuer="C1", partd_premium=10.0, drug_plan_deductible=100, maximum_oopc="1000.0"),
+        PartDPlan(plan_id="P2", plan_name="Plan B", issuer="C2", partd_premium=15.0, drug_plan_deductible=50, maximum_oopc="1200.0"),
     ]
     drugs = [
         Drug(drug_name="Drug X"),

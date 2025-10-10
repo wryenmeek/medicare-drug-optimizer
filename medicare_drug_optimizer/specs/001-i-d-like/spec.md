@@ -25,7 +25,7 @@
 ## User Scenarios & Testing *(mandatory)*
 
 ### Primary User Story
-A Medicare beneficiary wants to use the application to find their Part D plan and enter their drug list using medicare.gov's public, unauthenticated tools. They should then receive guided assistance to optimize costs. Optionally, they can log in to their medicare.gov account to import this information automatically.
+A Medicare beneficiary wants to use the application to find their Part D plan and enter their drug list using medicare.gov's public, unauthenticated tools. They should then receive assistance from a chatbot or interactive agent to optimize costs. Optionally, they can log in to their medicare.gov account to import this information automatically.
 
 ### Acceptance Scenarios
 1. **Given** a user has not logged in, **When** they start the process, **Then** the system guides them to find their plan and enter their drugs using public medicare.gov data.
@@ -37,14 +37,18 @@ A Medicare beneficiary wants to use the application to find their Part D plan an
 - How does the system handle an optional login attempt that fails or is cancelled?
 - What is the workflow if an authenticated user has no saved plan or drugs on their medicare.gov account?
 
+## Interaction & UX Flow
+- **Loading State**: Display a loading animation.
+- **Empty Data State**: Prompt users to enter data.
+- **API Error State**: Communicate that the service is temporarily unavailable.
+
 ## Requirements *(mandatory)*
 
 ### Functional Requirements
 - **FR-001**: System MUST provide a primary workflow using the unauthenticated `medicare.gov/plan-compare` tool, allowing users to select a plan and create a drug list without logging in.
-- **FR-002**: System SHOULD provide an optional, secure mechanism for the user to authenticate with their medicare.gov account.
-- **FR-003**: If a user authenticates, the system MUST attempt to automatically import their saved plan and drug list.
+
 - **FR-004**: System MUST analyze the user's drug list (whether entered manually or imported) against their plan's formulary, including pricing tiers, copays, and deductibles.
-- **FR-005**: System MUST present clear, actionable, and personalized cost-saving recommendations in a step-by-step format.
+- **FR-005**: A chatbot or interactive agent MUST present clear, actionable, and personalized cost-saving recommendations in a step-by-step format.
 - **FR-006**: System MUST handle and protect all user data, especially Protected Health Information (PHI), in a manner compliant with HIPAA standards, regardless of whether the user is authenticated.
 - **FR-007**: The guidance provided MUST be purely informational and include disclaimers that it is not financial or medical advice.
 
@@ -53,6 +57,14 @@ A Medicare beneficiary wants to use the application to find their Part D plan an
 - **PartDPlan**: The user's prescription drug plan, containing details about its formulary, cost structure (deductibles, copays, tiers), and network pharmacies.
 - **Drug**: A specific medication from the user's list, including its name, dosage, and quantity.
 - **Recommendation**: A single, actionable suggestion for cost reduction (e.g., "Switch to a generic version," "Use a preferred pharmacy," "Ask your doctor about a therapeutic alternative").
+
+## Integration & External Dependencies
+- **medicare.gov/plan-compare API Failure Modes:**
+  - **200**: Successful response.
+  - **400**: Bad Request (invalid parameters, out-of-range requests).
+  - **404**: Not Found (requested resource does not exist).
+  - **500**: Server Error (server encountered an error).
+- **Retry Strategy**: Not yet defined.
 
 ---
 

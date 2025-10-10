@@ -1,16 +1,35 @@
-# Research: Interacting with Medicare.gov
+# Research: Medicare Part D Drug Cost Optimizer
 
-## Decision
-The application will interact with the `medicare.gov/api/v1/data/plan-compare/` API directly.
+## Decision: Guided Assistance
+- **What was chosen**: A chatbot or interactive agent providing real-time advice.
+- **Rationale**: This approach offers dynamic and personalized guidance, aligning with the user's need for step-by-step assistance in optimizing costs.
+- **Alternatives considered**: Step-by-step prompts and explanations within the UI; Automated suggestions presented after initial data entry; Links to external resources and educational materials.
 
-## Rationale
-The user has clarified that a direct API is available and provides comprehensive data, making it the preferred method over browser automation.
+## Decision: UserSession Lifecycle States
+- **What was chosen**: Created, Active, Saved (user explicitly saves), Loaded (from saved state), Expired.
+- **Rationale**: This lifecycle provides flexibility for users to save their progress and ensures session data is managed appropriately, supporting both short-term and longer-term user interactions.
+- **Alternatives considered**: Created, Active, Expired (after inactivity), Terminated (user closes session); Transient (exists only during active use, no explicit states).
 
-- **Direct API is More Robust**: Direct API calls are generally more stable, faster, and less prone to breaking due to UI changes compared to browser automation.
-- **Referer Header Requirement**: The API requires setting the "Referer" HTTP header to "https://www.medicare.gov/plan-compare/". This is a known and manageable security measure.
-- **Comprehensive Data**: The API provides all necessary data for plans, drugs, pharmacies, and associated metadata, reducing the need for multiple data sources.
+## Decision: UI States for Loading, Empty Data, and API Errors
+- **What was chosen**: Loading animation for loading, prompt to enter data for empty data, service temporarily unavailable message for API errors.
+- **Rationale**: These UI states provide clear and immediate feedback to the user, improving the overall user experience and guiding them through different application states.
+- **Alternatives considered**: N/A (short answer provided by user).
 
-## Alternatives Considered
-- **Browser Automation (Playwright)**: This approach was initially considered but is now **rejected** as the primary integration method because a direct API is available. Browser automation is more brittle, slower, and resource-intensive. It may be considered as a fallback if the API proves insufficient for specific data points.
-- **Reverse-Engineering Internal APIs**: This approach was previously rejected and remains so, as the official API is now known.
-- **Static HTML Scraping**: This approach was previously rejected and remains so.
+## Decision: Medicare.gov Authentication Mechanism
+- **What was chosen**: No authentication mechanism will be implemented.
+- **Rationale**: This aligns with the primary workflow using unauthenticated services and simplifies the initial implementation by avoiding the complexities of secure third-party authentication.
+- **Alternatives considered**: OAuth 2.0 with a reputable identity provider; SAML 2.0 for enterprise integration; Direct username/password submission (with strong encryption).
+
+## Decision: Medicare.gov API Failure Modes
+- **What was chosen**: 200 (Success), 400 (Bad Request), 404 (Not Found), 500 (Server Error).
+- **Rationale**: Understanding these standard HTTP status codes allows for robust error handling and user feedback when interacting with the external API.
+- **Alternatives considered**: N/A (detailed response provided by user).
+
+## Technical Decisions & Constraints
+- **Language/Version**: Python 3.11, JavaScript (ES2022)
+- **Primary Dependencies**: FastAPI (Python backend), Requests (for API calls), React (frontend), Zustand (state management)
+- **Storage**: N/A (Session data will be managed in-memory or in the client)
+- **Testing**: Pytest (backend), Vitest (frontend)
+- **Target Platform**: Modern web browsers
+- **Project Type**: Web Application
+- **Constraints**: Reliance on the structure and availability of the `medicare.gov/api/v1/data/plan-compare/` API. Changes to the API may break the integration.

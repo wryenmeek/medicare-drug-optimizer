@@ -30,7 +30,7 @@
             "schema": {
               "type": "string"
             }
-            }
+          }
         ],
         "responses": {
           "200": {
@@ -186,9 +186,8 @@
       "DrugRestriction": {
         "type": "object",
         "properties": {
-          "type": {
-            "type": "string",
-            "enum": ["QL", "PA", "ST"]
+          "type": "string",
+          "enum": ["QL", "PA", "ST"]
           },
           "simplifiedText": {
             "type": "string"

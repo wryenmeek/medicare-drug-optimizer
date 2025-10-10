@@ -1,6 +1,7 @@
 import { Routes, Route, Link } from 'react-router-dom'
 import { Alert } from '@cmsgov/ds-medicare-gov'
 import { Button } from '@cmsgov/design-system'
+import { useState } from 'react'
 // import CustomComponent from './components/Custom/CustomComponent' // Example for custom component
 import DrugAlternativesDisplay from './components/DrugAlternativesDisplay'
 import DrugCoverageDisplay from './components/DrugCoverageDisplay'
@@ -34,6 +35,9 @@ function About() {
 }
 
 function App() {
+  const [planId, setPlanId] = useState('test_plan'); // Placeholder
+  const [drugName, setDrugName] = useState('TestDrug'); // Placeholder
+
   return (
     <>
       <nav>
@@ -68,8 +72,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
-        <Route path="/alternatives" element={<DrugAlternativesDisplay />} />
-        <Route path="/coverage" element={<DrugCoverageDisplay />} />
+        <Route path="/alternatives" element={<DrugAlternativesDisplay planId={planId} drugName={drugName} />} />
+        <Route path="/coverage" element={<DrugCoverageDisplay planId={planId} drugName={drugName} />} />
         <Route path="/pharmacy-preferences" element={<PharmacyPreferences />} />
         <Route path="/pharmacy-recommendations" element={<PharmacyRecommendations />} />
         <Route path="/optimized-plans" element={<OptimizedPlansDisplay />} /> {/* New Route */}

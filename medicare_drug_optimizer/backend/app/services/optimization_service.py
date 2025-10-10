@@ -42,7 +42,7 @@ class OptimizationService:
 
         # Simple placeholder: assume the first plan and first pharmacy cover all drugs
         # and calculate a dummy cost
-        dummy_cost = sum([p.monthly_premium for p in plans]) * 12 + len(drugs) * 50 # Example cost
+        dummy_cost = sum([(p.monthly_premium or 0) for p in plans]) * 12 + len(drugs) * 50 # Example cost
         
         return FulfillmentPlan(
             plan=plans[0],
@@ -62,7 +62,7 @@ class OptimizationService:
             return None
 
         # Simple placeholder: assume the first plan and first pharmacy are most convenient
-        dummy_cost = sum([p.monthly_premium for p in plans]) * 12 + len(drugs) * 60 # Slightly higher dummy cost
+        dummy_cost = sum([(p.monthly_premium or 0) for p in plans]) * 12 + len(drugs) * 60 # Slightly higher dummy cost
         
         return FulfillmentPlan(
             plan=plans[0],
@@ -82,7 +82,7 @@ class OptimizationService:
             return None
 
         # Simple placeholder: assume the first plan and first pharmacy are least painful
-        dummy_cost = sum([p.monthly_premium for p in plans]) * 12 + len(drugs) * 70 # Slightly higher dummy cost
+        dummy_cost = sum([(p.monthly_premium or 0) for p in plans]) * 12 + len(drugs) * 70 # Slightly higher dummy cost
         
         return FulfillmentPlan(
             plan=plans[0],

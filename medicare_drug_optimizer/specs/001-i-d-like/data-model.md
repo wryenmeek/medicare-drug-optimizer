@@ -5,6 +5,7 @@ This feature is primarily session-based and does not require a persistent databa
 ## Entities
 
 ### UserSession
+
 Represents a single user's journey through the optimization process.
 
 - **session_id**: A unique identifier for the session.
@@ -13,6 +14,7 @@ Represents a single user's journey through the optimization process.
 - **lifecycle_state**: The current state of the session (e.g., "Created", "Active", "Saved", "Loaded", "Expired").
 
 ### PartDPlan
+
 Represents a Medicare Part D plan.
 
 - **plan_id**: The official ID of the plan from medicare.gov.
@@ -21,6 +23,7 @@ Represents a Medicare Part D plan.
 - **formulary_url**: (Optional) A direct link to the plan's formulary document.
 
 ### Drug
+
 Represents a single medication.
 
 - **drug_name**: The name of the drug (e.g., "Lisinopril").
@@ -29,6 +32,7 @@ Represents a single medication.
 - **frequency**: The refill frequency (e.g., "monthly", "90-day").
 
 ### Recommendation
+
 Represents a single actionable suggestion for cost savings.
 
 - **recommendation_type**: The type of recommendation (e.g., "SWITCH_TO_GENERIC", "USE_PREFERRED_PHARMACY").

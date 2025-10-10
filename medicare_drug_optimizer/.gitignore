@@ -130,3 +130,7 @@ dmypy.json
 .gemini/cache/
 .gemini/logs/
 .gemini/history
+
+# Node
+node_modules/
+.vite/

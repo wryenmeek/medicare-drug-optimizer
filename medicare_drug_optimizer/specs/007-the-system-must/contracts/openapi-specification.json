@@ -30,7 +30,7 @@
             "schema": {
               "type": "string"
             }
-            }
+          }
         ],
         "responses": {
           "200": {

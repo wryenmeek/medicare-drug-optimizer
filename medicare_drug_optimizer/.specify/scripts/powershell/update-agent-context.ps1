@@ -127,7 +127,7 @@ function Extract-PlanField {
     $regex = "^\*\*$([Regex]::Escape($FieldPattern))\*\*: (.+)$"
     Get-Content -LiteralPath $PlanFile -Encoding utf8 | ForEach-Object {
         if ($_ -match $regex) { 
-            $val = $Matches[1].Trim()
+            $val = $Matches[2].Trim()
             if ($val -notin @('NEEDS CLARIFICATION','N/A')) { return $val }
         }
     } | Select-Object -First 1

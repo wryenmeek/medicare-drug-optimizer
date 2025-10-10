@@ -3,9 +3,11 @@
 
 function Get-RepoRoot {
     try {
-                if ($LASTEXITCODE -eq 0) {
-                    return (Resolve-Path $result).Path
-                }    } catch {
+        $result = git rev-parse --show-toplevel 2>$null
+        if ($LASTEXITCODE -eq 0) {
+            return (Resolve-Path $result).Path
+        }
+    } catch {
         # Git command failed
     }
     

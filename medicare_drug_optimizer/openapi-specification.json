@@ -1616,6 +1616,37 @@
         ]
       }
     },
+    "/api/drugs/{rxcui}/alternatives": {
+      "get": {
+        "summary": "Get drug alternatives",
+        "description": "Get a list of drug alternatives for a given drug.",
+        "parameters": [
+          {
+            "name": "rxcui",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of drug alternatives.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DrugAlternative"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/data/plan-compare/drugs/cost": {
       "post": {
         "summary": "/api/v1/data/plan-compare/drugs/cost",
@@ -17017,6 +17048,30 @@
                 ]
               }
             }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "DrugAlternative": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "rxcui": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "tier": {
+            "type": "string"
+          },
+          "estimated_annual_cost": {
+            "type": "number"
           }
         }
       }

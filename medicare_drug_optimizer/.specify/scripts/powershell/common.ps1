@@ -7,12 +7,21 @@ function Get-RepoRoot {
         if ($LASTEXITCODE -eq 0) {
             return (Resolve-Path $result).Path
         }
-    } catch {
+    }
+    catch {
         # Git command failed
     }
-    
-    # Fall back to script location for non-git repos
-    return (Resolve-Path (Join-Path $PSScriptRoot "../../..")).Path
+
+    # Fallback: search upwards for a repository marker
+    $current = $PSScriptRoot
+    while ($current -ne $null -and $current -ne '') {
+        if ((Test-Path (Join-Path $current '.git')) -or (Test-Path (Join-Path $current 'pyproject.toml'))) {
+            return $current
+        }
+        $current = (Split-Path $current -Parent)
+    }
+    # Final fallback to original relative path
+    return (Resolve-Path (Join-Path $PSScriptRoot '../../..')).Path
 }
 
 function Get-CurrentBranch {
@@ -22,7 +31,8 @@ function Get-CurrentBranch {
         if ($LASTEXITCODE -eq 0) {
             return $result
         }
-    } catch {
+    }
+    catch {
         # Git command failed
     }
 
@@ -33,10 +43,10 @@ function Get-CurrentBranch {
     
     # For non-git repos, try to find the latest feature directory
     $repoRoot = Get-RepoRoot
-    $specsDir = Join-Path $repoRoot "specs"
+    $specsDir = Join-Path $repoRoot 'specs'
     
     if (Test-Path $specsDir) {
-        $latestFeature = ""
+        $latestFeature = ''
         $highest = 0
         
         Get-ChildItem -Path $specsDir -Directory | ForEach-Object {
@@ -55,14 +65,15 @@ function Get-CurrentBranch {
     }
     
     # Final fallback
-    return "main"
+    return 'main'
 }
 
 function Test-HasGit {
     try {
         git rev-parse --show-toplevel 2>$null | Out-Null
         return ($LASTEXITCODE -eq 0)
-    } catch {
+    }
+    catch {
         return $false
     }
 }
@@ -75,13 +86,13 @@ function Test-FeatureBranch {
     
     # For non-git repos, we can't enforce branch naming but still provide output
     if (-not $HasGit) {
-        Write-Warning "[specify] Warning: Git repository not detected; skipped branch validation"
+        Write-Warning '[specify] Warning: Git repository not detected; skipped branch validation'
         return $true
     }
     
     if ($Branch -notmatch '^[0-9]{3}-') {
         Write-Output "ERROR: Not on a feature branch. Current branch: $Branch"
-        Write-Output "Feature branches should be named like: 001-feature-name"
+        Write-Output 'Feature branches should be named like: 001-feature-name'
         return $false
     }
     return $true
@@ -99,17 +110,17 @@ function Get-FeaturePathsEnv {
     $featureDir = Get-FeatureDir -RepoRoot $repoRoot -Branch $currentBranch
     
     [PSCustomObject]@{
-        REPO_ROOT     = $repoRoot
+        REPO_ROOT      = $repoRoot
         CURRENT_BRANCH = $currentBranch
-        HAS_GIT       = $hasGit
-        FEATURE_DIR   = $featureDir
-        FEATURE_SPEC  = Join-Path $featureDir 'spec.md'
-        IMPL_PLAN     = Join-Path $featureDir 'plan.md'
-        TASKS         = Join-Path $featureDir 'tasks.md'
-        RESEARCH      = Join-Path $featureDir 'research.md'
-        DATA_MODEL    = Join-Path $featureDir 'data-model.md'
-        QUICKSTART    = Join-Path $featureDir 'quickstart.md'
-        CONTRACTS_DIR = Join-Path $featureDir 'contracts'
+        HAS_GIT        = $hasGit
+        FEATURE_DIR    = $featureDir
+        FEATURE_SPEC   = Join-Path $featureDir 'spec.md'
+        IMPL_PLAN      = Join-Path $featureDir 'plan.md'
+        TASKS          = Join-Path $featureDir 'tasks.md'
+        RESEARCH       = Join-Path $featureDir 'research.md'
+        DATA_MODEL     = Join-Path $featureDir 'data-model.md'
+        QUICKSTART     = Join-Path $featureDir 'quickstart.md'
+        CONTRACTS_DIR  = Join-Path $featureDir 'contracts'
     }
 }
 
@@ -118,7 +129,8 @@ function Test-FileExists {
     if (Test-Path -Path $Path -PathType Leaf) {
         Write-Output "  ✓ $Description"
         return $true
-    } else {
+    }
+    else {
         Write-Output "  ✗ $Description"
         return $false
     }
@@ -129,7 +141,8 @@ function Test-DirHasFiles {
     if ((Test-Path -Path $Path -PathType Container) -and (Get-ChildItem -Path $Path -ErrorAction SilentlyContinue | Where-Object { -not $_.PSIsContainer } | Select-Object -First 1)) {
         Write-Output "  ✓ $Description"
         return $true
-    } else {
+    }
+    else {
         Write-Output "  ✗ $Description"
         return $false
     }

@@ -3,11 +3,13 @@
 **Date**: 2025-10-09
 
 ## Summary
+
 This document outlines the data models that will be used to implement the covered drug alternatives feature. These models are based on the feature specification and the research conducted in Phase 0.
 
 ## Data Models
 
 ### Drug
+
 Represents a drug from the user's list.
 
 **Source**: User's drug list from medicare.gov.
@@ -19,6 +21,7 @@ Represents a drug from the user's list.
 | `ndcs` | list[string] | A list of National Drug Codes (NDCs) associated with the drug. |
 
 ### DrugAlternative
+
 Represents a covered alternative for a drug.
 
 **Source**: RxClass API and the user's Part D plan formulary.
@@ -32,6 +35,7 @@ Represents a covered alternative for a drug.
 | `estimated_annual_cost` | float | The estimated annual cost of the alternative. |
 
 ### RxClass
+
 Represents a drug class from the RxClass API.
 
 **Source**: RxClass API.
@@ -52,6 +56,7 @@ The backend will expose a new endpoint to retrieve the covered alternatives for 
 **Endpoint**: `GET /api/drugs/{rxcui}/alternatives`
 
 **Request Parameters**:
+
 - `rxcui` (path): The RxCUI of the drug to find alternatives for.
 
 **Response Body**:

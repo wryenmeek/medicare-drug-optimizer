@@ -1,1 +1,227 @@
-{ "openapi": "3.0.0", "info": { "title": "Medicare Plan Compare API", "version": "1.0.0", "description": "API for retrieving Medicare Part D plan, drug, and pharmacy data." }, "servers": [ { "url": "https://www.medicare.gov/api/v1/data/plan-compare/" } ], "paths": { "/plans": { "get": { "summary": "Get Medicare Part D Plans", "parameters": [ { "name": "zip", "in": "query", "required": true, "schema": { "type": "string" } }, { "name": "county", "in": "query", "required": true, "schema": { "type": "string" } } ], "responses": { "200": { "description": "A list of Medicare Part D plans", "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Plan" } } } } } } } }, "/drugs": { "get": { "summary": "Get Drug Information", "parameters": [ { "name": "planId", "in": "query", "required": true, "schema": { "type": "string" } }, { "name": "drugName", "in": "query", "required": true, "schema": { "type": "string" } } ], "responses": { "200": { "description": "Drug information and alternatives", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/DrugInfo" } } } } } } }, "/pharmacies": { "get": { "summary": "Get Pharmacies", "parameters": [ { "name": "planId", "in": "query", "required": true, "schema": { "type": "string" } }, { "name": "zip", "in": "query", "required": true, "schema": { "type": "string" } } ], "responses": { "200": { "description": "List of pharmacies", "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Pharmacy" } } } } } } } } }, "components": { "schemas": { "Plan": { "type": "object", "properties": { "id": { "type": "string" }, "name": { "type": "string" }, "issuer": { "type": "string" }, "formularyUrl": { "type": "string" } } }, "DrugInfo": { "type": "object", "properties": { "drugName": { "type": "string" }, "alternatives": { "type": "array", "items": { "$ref": "#/components/schemas/DrugAlternative" } }, "restrictions": { "type": "array", "items": { "$ref": "#/components/schemas/DrugRestriction" } } } }, "DrugAlternative": { "type": "object", "properties": { "name": { "type": "string" }, "category": { "type": "string", "enum": [ "Brand", "Generic", "Branded Generic", "Biosimilar", "Interchangeable Biologic" ] }, "estimatedAnnualCost": { "type": "number" } } }, "DrugRestriction": { "type": "object", "properties": { "type": { "type": "string", "enum": [ "QL", "PA", "ST" ] }, "simplifiedText": { "type": "string" }, "rawText": { "type": "string" } } }, "Pharmacy": { "type": "object", "properties": { "id": { "type": "string" }, "name": { "type": "string" }, "address": { "type": "string" }, "latitude": { "type": "number" }, "longitude": { "type": "number" }, "networkStatus": { "type": "string", "enum": [ "In-Network", "Preferred", "Mail-Order" ] } } } } } }
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Medicare Plan Compare API",
+    "version": "1.0.0",
+    "description": "API for retrieving Medicare Part D plan, drug, and pharmacy data."
+  },
+  "servers": [
+    {
+      "url": "https://www.medicare.gov/api/v1/data/plan-compare/"
+    }
+  ],
+  "paths": {
+    "/plans": {
+      "get": {
+        "summary": "Get Medicare Part D Plans",
+        "parameters": [
+          {
+            "name": "zip",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "county",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of Medicare Part D plans",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Plan"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/drugs": {
+      "get": {
+        "summary": "Get Drug Information",
+        "parameters": [
+          {
+            "name": "planId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "drugName",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Drug information and alternatives",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DrugInfo"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pharmacies": {
+      "get": {
+        "summary": "Get Pharmacies",
+        "parameters": [
+          {
+            "name": "planId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "zip",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of pharmacies",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Pharmacy"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Plan": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "issuer": {
+            "type": "string"
+          },
+          "formularyUrl": {
+            "type": "string"
+          }
+        }
+      },
+      "DrugInfo": {
+        "type": "object",
+        "properties": {
+          "drugName": {
+            "type": "string"
+          },
+          "alternatives": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DrugAlternative"
+            }
+          },
+          "restrictions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DrugRestriction"
+            }
+          }
+        }
+      },
+      "DrugAlternative": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "Brand",
+              "Generic",
+              "Branded Generic",
+              "Biosimilar",
+              "Interchangeable Biologic"
+            ]
+          },
+          "estimatedAnnualCost": {
+            "type": "number"
+          }
+        }
+      },
+      "DrugRestriction": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["QL", "PA", "ST"]
+          },
+          "simplifiedText": {
+            "type": "string"
+          },
+          "rawText": {
+            "type": "string"
+          }
+        }
+      },
+      "Pharmacy": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "latitude": {
+            "type": "number"
+          },
+          "longitude": {
+            "type": "number"
+          },
+          "networkStatus": {
+            "type": "string",
+            "enum": ["In-Network", "Preferred", "Mail-Order"]
+          }
+        }
+      }
+    }
+  }
+}

@@ -11,6 +11,7 @@ Represents a single user's journey through the optimization process.
 - **session_id**: A unique identifier for the session.
 - **part_d_plan**: The PartDPlan object selected by the user.
 - **drug_list**: A list of Drug objects entered by the user.
+- **lifecycle_state**: The current state of the session (e.g., "Created", "Active", "Saved", "Loaded", "Expired").
 
 ### PartDPlan
 

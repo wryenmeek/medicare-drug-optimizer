@@ -15,13 +15,19 @@ function Get-RepoRoot {
     # Fallback: search upwards for a repository marker
     $current = $PSScriptRoot
     while ($current -ne $null -and $current -ne '') {
-        if ((Test-Path (Join-Path $current '.git')) -or (Test-Path (Join-Path $current 'pyproject.toml'))) {
+        if ((Test-Path (Join-Path $current '.git')) -or (Test-Path (Join-Path $current 'pyproject.toml')) -or (Test-Path (Join-Path $current 'README.md')) -or (Test-Path (Join-Path $current 'LICENSE')) -or (Test-Path (Join-Path $current '.specify'))) {
             return $current
         }
-        $current = (Split-Path $current -Parent)
+        $parent = (Split-Path $current -Parent)
+        if ($parent -eq $current) { break }
+        $current = $parent
     }
-    # Final fallback to original relative path
-    return (Resolve-Path (Join-Path $PSScriptRoot '../../..')).Path
+    # Final fallback: use workspace root if available, else error
+    try {
+        $wsRoot = Resolve-Path (Join-Path $PSScriptRoot '../../..')
+        if ($wsRoot -and (Test-Path $wsRoot)) { return $wsRoot.Path }
+    } catch {}
+    throw "Unable to determine repository root. Please run from within a valid repo."
 }
 
 function Get-CurrentBranch {

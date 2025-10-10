@@ -1,3 +1,27 @@
+# Aggregates all Language/Version and Primary Dependencies from every plan.md in /specs
+function Aggregate-PlanData {
+    $specsDir = Join-Path $REPO_ROOT 'medicare_drug_optimizer/specs'
+    $langSet = @{}
+    $frameworkSet = @{}
+    $planFiles = Get-ChildItem -Path $specsDir -Recurse -Filter 'plan.md' | Select-Object -ExpandProperty FullName
+    foreach ($planFile in $planFiles) {
+        $langRaw = Extract-PlanField -FieldPattern 'Language/Version' -PlanFile $planFile
+        $frameworkRaw = Extract-PlanField -FieldPattern 'Primary Dependencies' -PlanFile $planFile
+        if ($langRaw) {
+            foreach ($lang in ($langRaw -split ',')) {
+                $langSet[$lang.Trim()] = $true
+            }
+        }
+        if ($frameworkRaw) {
+            foreach ($fw in ($frameworkRaw -split ',')) {
+                $frameworkSet[$fw.Trim()] = $true
+            }
+        }
+    }
+    $script:NEW_LANG = ($langSet.Keys | Where-Object { $_ -and $_ -ne 'N/A' -and $_ -ne 'NEEDS CLARIFICATION' } | Sort-Object | ForEach-Object { "- $_" }) -join "`n"
+    $script:NEW_FRAMEWORK = ($frameworkSet.Keys | Where-Object { $_ -and $_ -ne 'N/A' -and $_ -ne 'NEEDS CLARIFICATION' } | Sort-Object | ForEach-Object { "- $_" }) -join "`n"
+    return $true
+}
 #!/usr/bin/env pwsh
 <#!
 .SYNOPSIS
@@ -45,7 +69,7 @@ $NEW_PLAN = $IMPL_PLAN
 
 # Agent file paths
 $CLAUDE_FILE = Join-Path $REPO_ROOT 'CLAUDE.md'
-$GEMINI_FILE = Join-Path $REPO_ROOT 'GEMINI.md'
+$GEMINI_FILE = Join-Path $REPO_ROOT 'medicare_drug_optimizer/GEMINI.md'
 $COPILOT_FILE = Join-Path $REPO_ROOT '.github/copilot-instructions.md'
 $CURSOR_FILE = Join-Path $REPO_ROOT '.cursor/rules/specify-rules.mdc'
 $QWEN_FILE = Join-Path $REPO_ROOT 'QWEN.md'
@@ -123,14 +147,33 @@ function Extract-PlanField {
         [string]$PlanFile
     )
     if (-not (Test-Path $PlanFile)) { return '' }
-    # Lines like **Language/Version**: Python 3.12
-    $regex = "^\*\*$([Regex]::Escape($FieldPattern))\*\*: (.+)$"
-    Get-Content -LiteralPath $PlanFile -Encoding utf8 | ForEach-Object {
-        if ($_ -match $regex) { 
-            $val = $Matches[2].Trim()
-            if ($val -notin @('NEEDS CLARIFICATION', 'N/A')) { return $val }
+    $regex = '^\*\*\s*' + [Regex]::Escape($FieldPattern) + '\s*\*\*\s*:\s*(.*)$'
+    Write-Host "DEBUG: Extracting field '$FieldPattern' with regex: $regex"
+    $lines = Get-Content -LiteralPath $PlanFile -Encoding utf8
+    foreach ($line in $lines) {
+        Write-Host "DEBUG: Line: $line"
+        $match = [regex]::Match($line, $regex, 'IgnoreCase')
+        if ($match.Success -and $match.Groups.Count -ge 2) {
+            $val = $match.Groups[1].Value.Trim()
+            Write-Host "DEBUG: Matched value: $val"
+            if ($val -notin @('NEEDS CLARIFICATION', 'N/A')) {
+                return $val
+            }
         }
-    } | Select-Object -First 1
+    }
+    return ''
+    $regex = "^\*\*\s*$FieldPattern\s*\*\*\s*:\s*(.*)$"
+    $lines = Get-Content -LiteralPath $PlanFile -Encoding utf8
+    foreach ($line in $lines) {
+        $match = [regex]::Match($line, $regex, 'IgnoreCase')
+        if ($match.Success -and $match.Groups.Count -ge 3) {
+            $val = $match.Groups[2].Value.Trim()
+            if ($val -notin @('NEEDS CLARIFICATION', 'N/A')) {
+                return $val
+            }
+        }
+    }
+    return ''
 }
 
 function Parse-PlanData {
@@ -140,8 +183,19 @@ function Parse-PlanData {
     )
     if (-not (Test-Path $PlanFile)) { Write-Err "Plan file not found: $PlanFile"; return $false }
     Write-Info "Parsing plan data from $PlanFile"
-    $script:NEW_LANG = Extract-PlanField -FieldPattern 'Language/Version' -PlanFile $PlanFile
-    $script:NEW_FRAMEWORK = Extract-PlanField -FieldPattern 'Primary Dependencies' -PlanFile $PlanFile
+    $langRaw = Extract-PlanField -FieldPattern 'Language/Version' -PlanFile $PlanFile
+    $frameworkRaw = Extract-PlanField -FieldPattern 'Primary Dependencies' -PlanFile $PlanFile
+    # Format as bulleted lists if comma-separated
+    if ($langRaw) {
+        $langList = ($langRaw -split ',') | ForEach-Object { '- ' + $_.Trim() }
+        $script:NEW_LANG = ($langList -join [Environment]::NewLine).Trim()
+    }
+    else { $script:NEW_LANG = '' }
+    if ($frameworkRaw) {
+        $frameworkList = ($frameworkRaw -split ',') | ForEach-Object { '- ' + $_.Trim() }
+        $script:NEW_FRAMEWORK = ($frameworkList -join [Environment]::NewLine).Trim()
+    }
+    else { $script:NEW_FRAMEWORK = '' }
     $script:NEW_DB = Extract-PlanField -FieldPattern 'Storage' -PlanFile $PlanFile
     $script:NEW_PROJECT_TYPE = Extract-PlanField -FieldPattern 'Project Type' -PlanFile $PlanFile
 
@@ -217,7 +271,7 @@ function New-AgentFile {
     $escaped_branch = $CURRENT_BRANCH
 
     $content = Get-Content -LiteralPath $temp -Raw -Encoding utf8
-    $content = $content -replace '\[PROJECT NAME\]', $ProjectName
+    $content = $content -replace '\[PROJECT_NAME\]', $ProjectName
     $content = $content -replace '\[DATE\]', $Date.ToString('yyyy-MM-dd')
     
     # Build the technology stack string safely
@@ -252,7 +306,7 @@ function New-AgentFile {
         $recentChangesForTemplate = "- ${escaped_branch}: Added ${escaped_framework}"
     }
     
-    $content = $content -replace '\[LAST 3 FEATURES AND WHAT THEY ADDED\]', $recentChangesForTemplate
+    $content = $content -replace '\[RECENT_CHANGES\]', $recentChangesForTemplate
     # Convert literal \n sequences introduced by Escape to real newlines
     $content = $content -replace '\\n', [Environment]::NewLine
 
@@ -290,49 +344,36 @@ function Update-ExistingAgentFile {
     if ($techStack) { $newChangeEntry = "- ${CURRENT_BRANCH}: Added ${techStack}" }
     elseif ($NEW_DB -and $NEW_DB -notin @('N/A', 'NEEDS CLARIFICATION')) { $newChangeEntry = "- ${CURRENT_BRANCH}: Added ${NEW_DB}" }
 
-    $lines = Get-Content -LiteralPath $TargetFile -Encoding utf8
-    $output = New-Object System.Collections.Generic.List[string]
-    $inTech = $false; $inChanges = $false; $techAdded = $false; $changeAdded = $false; $existingChanges = 0
-
-    for ($i = 0; $i -lt $lines.Count; $i++) {
-        $line = $lines[$i]
-        if ($line -eq '## Active Technologies') {
-            $output.Add($line)
-            $inTech = $true
-            continue
-        }
-        if ($inTech -and $line -match '^##\s') {
-            if (-not $techAdded -and $newTechEntries.Count -gt 0) { $newTechEntries | ForEach-Object { $output.Add($_) }; $techAdded = $true }
-            $output.Add($line); $inTech = $false; continue
-        }
-        if ($inTech -and [string]::IsNullOrWhiteSpace($line)) {
-            if (-not $techAdded -and $newTechEntries.Count -gt 0) { $newTechEntries | ForEach-Object { $output.Add($_) }; $techAdded = $true }
-            $output.Add($line); continue
-        }
-        if ($line -eq '## Recent Changes') {
-            $output.Add($line)
-            if ($newChangeEntry) { $output.Add($newChangeEntry); $changeAdded = $true }
-            $inChanges = $true
-            continue
-        }
-        if ($inChanges -and $line -match '^##\s') { $output.Add($line); $inChanges = $false; continue }
-        if ($inChanges -and $line -match '^- ') {
-            if ($existingChanges -lt 2) { $output.Add($line); $existingChanges++ }
-            continue
-        }
-        if ($line -match '\*\*Last updated\*\*: .*\d{4}-\d{2}-\d{2}') {
-            $output.Add(($line -replace '\d{4}-\d{2}-\d{2}', $Date.ToString('yyyy-MM-dd')))
-            continue
-        }
-        $output.Add($line)
+    $content = Get-Content -LiteralPath $TargetFile -Raw -Encoding utf8
+    $content = $content -replace '\[PROJECT_NAME\]', (Split-Path $REPO_ROOT -Leaf)
+    # Replace the Core Technologies section
+    $langBlock = $script:NEW_LANG.Trim()
+    if ($langBlock) {
+        $content = $content -replace '(?ms)(## Core Technologies\s*-)(.*?)(\n##|\n$)', "`$1`n$langBlock`n`$3"
     }
-
-    # Post-loop check: if we're still in the Active Technologies section and haven't added new entries
-    if ($inTech -and -not $techAdded -and $newTechEntries.Count -gt 0) {
-        $newTechEntries | ForEach-Object { $output.Add($_) }
+    else {
+        $content = $content -replace '(?ms)(## Core Technologies\s*-)(.*?)(\n##|\n$)', "`$1`n`$3"
     }
-
-    Set-Content -LiteralPath $TargetFile -Value ($output -join [Environment]::NewLine) -Encoding utf8
+    $frameworkBlock = $script:NEW_FRAMEWORK.Trim()
+    if ($frameworkBlock) {
+        $content = $content -replace '(?ms)(## Key Libraries\s*-)(.*?)(\n##|\n$)', "`$1`n$frameworkBlock`n`$3"
+    }
+    else {
+        $content = $content -replace '(?ms)(## Key Libraries\s*-)(.*?)(\n##|\n$)', "`$1`n`$3"
+    }
+    # Build the recent changes string safely
+    $recentChangesForTemplate = ''
+    if ($NEW_LANG -and $NEW_FRAMEWORK) {
+        $recentChangesForTemplate = "- ${CURRENT_BRANCH}: Added ${NEW_LANG} + ${NEW_FRAMEWORK}"
+    }
+    elseif ($NEW_LANG) {
+        $recentChangesForTemplate = "- ${CURRENT_BRANCH}: Added ${NEW_LANG}"
+    }
+    elseif ($NEW_FRAMEWORK) {
+        $recentChangesForTemplate = "- ${CURRENT_BRANCH}: Added ${NEW_FRAMEWORK}"
+    }
+    $content = $content -replace '\[RECENT_CHANGES\]', $recentChangesForTemplate
+    Set-Content -LiteralPath $TargetFile -Value $content -Encoding utf8
     return $true
 }
 
@@ -420,9 +461,49 @@ function Print-Summary {
 }
 
 function Main {
-    Validate-Environment
-    Write-Info "=== Updating agent context files for feature $CURRENT_BRANCH ==="
-    if (-not (Parse-PlanData -PlanFile $NEW_PLAN)) { Write-Err 'Failed to parse plan data'; exit 1 }
+    # Robustly resolve plan.md location
+    $envData = Get-FeaturePathsEnv
+    $REPO_ROOT = $envData.REPO_ROOT
+    $CURRENT_BRANCH = $envData.CURRENT_BRANCH
+    $IMPL_PLAN = $envData.IMPL_PLAN
+
+
+    $planPath = $IMPL_PLAN
+    if (-not (Test-Path $planPath)) {
+        # Fallback: try main feature, else first available feature
+        $specsDir = Join-Path $REPO_ROOT 'medicare_drug_optimizer/specs'
+        $mainFeatureDir = Join-Path $specsDir 'main'
+        $mainPlan = Join-Path $mainFeatureDir 'plan.md'
+        if (Test-Path $mainPlan) {
+            Write-WarningMsg "No plan.md found for feature $CURRENT_BRANCH, using main plan.md instead."
+            $planPath = $mainPlan
+        }
+        else {
+            # Find first available feature directory with plan.md
+            $featureDirs = Get-ChildItem -Path $specsDir -Directory | Where-Object { Test-Path (Join-Path $_.FullName 'plan.md') }
+            if ($featureDirs.Count -gt 0) {
+                $firstPlan = Join-Path $featureDirs[0].FullName 'plan.md'
+                Write-WarningMsg "No plan.md found for feature $CURRENT_BRANCH or main; using $firstPlan instead."
+                $planPath = $firstPlan
+            }
+            else {
+                Write-Err "No plan.md found for feature $CURRENT_BRANCH, main, or any feature directory."
+                Write-Info 'Ensure you are working on a feature with a corresponding spec directory.'
+                exit 1
+            }
+        }
+    }
+
+    # Validate template file
+    $TEMPLATE_FILE = Join-Path $REPO_ROOT 'medicare_drug_optimizer/.specify/templates/agent-file-template.md'
+    if (-not (Test-Path $TEMPLATE_FILE)) {
+        Write-Err "Template file not found at $TEMPLATE_FILE"
+        Write-Info 'Run specify init to scaffold .specify/templates, or add agent-file-template.md there.'
+        exit 1
+    }
+
+    Write-Info '=== Aggregating agent context from all plan.md files ==='
+    if (-not (Aggregate-PlanData)) { Write-Err 'Failed to aggregate plan data'; exit 1 }
     $success = $true
     if ($AgentType) {
         Write-Info "Updating specific agent: $AgentType"
